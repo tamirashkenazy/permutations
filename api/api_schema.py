@@ -1,5 +1,7 @@
 import logging
 import sys
+import time
+
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from starlette import status
@@ -8,19 +10,20 @@ from starlette.middleware.cors import CORSMiddleware
 from fastapi_utils.timing import add_timing_middleware
 import os.path as path
 
+from db.db_constants import TOTAL_WORDS_KEY, TOTAL_REQUESTS_KEY, AVG_PROCESSING_TIME_NS_KEY
+from db.db_handler import get_stats_db, add_statistics_of_requests
+
 absolute_project_path = path.dirname(path.abspath(__file__))
 sys.path.append(absolute_project_path)
 
 from logger.api_logger import get_stream_handler
 from api.definitions import PermutationResponse
 from utils.permutations_utils import (
-    sort_a_word,
     get_list_of_permutations_from_a_file,
-    add_statistics_of_requests,
 )
 
 api_handler = FastAPI(
-    title="Permutation Api Schema", docs_url=None, redoc_url=None, openapi_url=""
+    title="Permutations Api Schema", docs_url=None, redoc_url=None, openapi_url=""
 )
 
 # region Logging
@@ -52,7 +55,7 @@ api_handler.add_middleware(
     status_code=status.HTTP_200_OK,
 )
 def get_health_message():
-    return "Health Check OK"
+    return "Health Check OK\n"
 
 
 # TODO - add exception handler for errors and exceptions
@@ -69,24 +72,24 @@ async def get_all_permutations_of_word_from_file(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="Got an empty word, please provide word=<some_word>",
         )
-    sorted_word = sort_a_word(word)
-    list_of_permutations = get_list_of_permutations_from_a_file(sorted_word)
+    start = time.process_time_ns()
+    print(start)
+    list_of_permutations = get_list_of_permutations_from_a_file(word)
+    end = time.process_time_ns()
+    print(end)
+    total_time_in_ns = end - start
     # this task will execute after the response
-    measured_time_in_nano = 100
-    background_tasks.add_task(add_statistics_of_requests, measured_time_in_nano)
+    background_tasks.add_task(add_statistics_of_requests, total_time_in_ns)
     return {"similar": list_of_permutations}
 
 
 @api_handler.get("/api/v1/stats", status_code=status.HTTP_200_OK)
 def get_statistics():
-    nano_seconds = 45000
-    total_words = 100
-    total_requests = 10
-
+    stats_db = get_stats_db()
     return {
-        "totalWords": total_words,
-        "totalRequests": total_requests,
-        "avgProcessingTimeNs": nano_seconds,
+        TOTAL_WORDS_KEY: stats_db.get(TOTAL_WORDS_KEY),
+        TOTAL_REQUESTS_KEY: stats_db.get(TOTAL_REQUESTS_KEY),
+        AVG_PROCESSING_TIME_NS_KEY: stats_db.get(AVG_PROCESSING_TIME_NS_KEY),
     }
 
 
