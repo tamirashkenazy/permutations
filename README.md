@@ -6,7 +6,7 @@ docker build -t permutations-image .
 
 how to run:
 
-docker run -d --name permutations-container permutations-image
+docker run -d --name permutations-container -p 8000:8000 permutations-image
 
 
 check that api is running:

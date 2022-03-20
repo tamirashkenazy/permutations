@@ -17,7 +17,9 @@ COPY ./utils /permutations_app/utils
 COPY ./db /permutations_app/db
 COPY ./words_clean.txt /permutations_app/words_clean.txt
 
-CMD ["python", "permutations_app/utils/preprocess_main.py"]
+RUN echo "Starting Preprocessing: mapping all words in db"
+RUN python3 /permutations_app/utils/preprocess_main.py
+RUN echo "Preprocessing is Done"
 
 EXPOSE 8000
 

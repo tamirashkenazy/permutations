@@ -1,8 +1,14 @@
 import pickledb
 import os.path as path
 
-from db.db_constants import STATS_DB_FILE_NAME, TOTAL_WORDS_KEY, TOTAL_REQUESTS_KEY, AVG_PROCESSING_TIME_NS_KEY
+from db.db_constants import (
+    STATS_DB_FILE_NAME,
+    TOTAL_WORDS_KEY,
+    TOTAL_REQUESTS_KEY,
+    AVG_PROCESSING_TIME_NS_KEY,
+)
 from paths.paths import get_persistent_db_dir_path
+
 
 def get_pickle_db(file_path: str) -> pickledb.PickleDB:
     db = pickledb.load(file_path, False)

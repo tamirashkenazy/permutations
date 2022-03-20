@@ -10,7 +10,11 @@ from starlette.middleware.cors import CORSMiddleware
 from fastapi_utils.timing import add_timing_middleware
 import os.path as path
 
-from db.db_constants import TOTAL_WORDS_KEY, TOTAL_REQUESTS_KEY, AVG_PROCESSING_TIME_NS_KEY
+from db.db_constants import (
+    TOTAL_WORDS_KEY,
+    TOTAL_REQUESTS_KEY,
+    AVG_PROCESSING_TIME_NS_KEY,
+)
 from db.db_handler import get_stats_db, add_statistics_of_requests
 
 absolute_project_path = path.dirname(path.abspath(__file__))
@@ -73,10 +77,8 @@ async def get_all_permutations_of_word_from_file(
             detail="Got an empty word, please provide word=<some_word>",
         )
     start = time.process_time_ns()
-    print(start)
     list_of_permutations = get_list_of_permutations_from_a_file(word)
     end = time.process_time_ns()
-    print(end)
     total_time_in_ns = end - start
     # this task will execute after the response
     background_tasks.add_task(add_statistics_of_requests, total_time_in_ns)

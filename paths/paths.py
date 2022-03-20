@@ -4,7 +4,6 @@ import os
 from db.db_constants import PERMUTATIONS_DB_NAME
 
 BASE_APP_DIR_PATH = path.dirname(path.dirname(__file__))
-print(f"BASE_APP_DIR_PATH: {BASE_APP_DIR_PATH}")
 
 DB_DIR = path.join(path.dirname(__file__), "db")
 

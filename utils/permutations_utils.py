@@ -44,5 +44,3 @@ def get_list_of_permutations_from_a_file(word: str) -> List[str]:
         if word in set_of_words:
             set_of_words.remove(word)
         return list(set_of_words)
-
-
