@@ -26,7 +26,8 @@ def get_stats_db_file_path() -> str:
 
 
 def get_stats_db() -> pickledb.PickleDB:
-    stats_db = pickledb.load(get_stats_db_file_path(), auto_dump=True, sig=False)
+    stats_db_file_path = get_stats_db_file_path()
+    stats_db = pickledb.load(stats_db_file_path, auto_dump=True, sig=False)
     return stats_db
 
 
@@ -40,7 +41,7 @@ def add_statistics_of_requests(measured_time_nano_sec: int):
     total_time += measured_time_nano_sec
     total_reqs += 1
 
-    new_avg_time_in_ns = total_time / total_reqs
+    new_avg_time_in_ns = total_time // total_reqs
     stats_db.set(TOTAL_REQUESTS_KEY, total_reqs)
     stats_db.set(AVG_PROCESSING_TIME_NS_KEY, new_avg_time_in_ns)
 

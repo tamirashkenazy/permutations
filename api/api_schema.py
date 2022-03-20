@@ -8,7 +8,6 @@ from starlette import status
 from starlette.background import BackgroundTasks
 from starlette.middleware.cors import CORSMiddleware
 from fastapi_utils.timing import add_timing_middleware
-import os.path as path
 
 from db.db_constants import (
     TOTAL_WORDS_KEY,
@@ -16,10 +15,6 @@ from db.db_constants import (
     AVG_PROCESSING_TIME_NS_KEY,
 )
 from db.db_handler import get_stats_db, add_statistics_of_requests
-
-absolute_project_path = path.dirname(path.abspath(__file__))
-sys.path.append(absolute_project_path)
-
 from logger.api_logger import get_stream_handler
 from api.definitions import PermutationResponse
 from utils.permutations_utils import (
@@ -34,7 +29,7 @@ api_handler = FastAPI(
 api_logger = logging.getLogger(__name__)
 api_logger.setLevel(logging.DEBUG)
 
-api_logger.addHandler(get_stream_handler(sys.stdout, logging.INFO))
+api_logger.addHandler(get_stream_handler(sys.stdout, logging.DEBUG))
 api_logger.addHandler(get_stream_handler(sys.stderr, logging.ERROR))
 # endregion
 
