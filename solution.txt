@@ -1,0 +1,52 @@
+Solution:
+    The main idea behind my solution is to make a fast response for each similar word request, by getting the list in O(1).
+
+    I had to find a representation for similar words that will be the Key for all permutations.
+    In a word request, i will be able to convert the word to the representation and get the list of the similar words.
+
+The word representation (the Key):
+    word letters sorted in alphabet order
+    for example:
+        ache -> aceh
+        each -> aceh
+    the sort is taking O(1) for finite number of letters
+
+Preprocessing:
+    The preprocessing is mapping each word to a file with the name: <Key>.txt (Key is the sorted word)
+    That will create files, where each file holds all the similar words
+
+    for example:
+        words_clean.txt:
+            a
+            aab
+            aba
+            ache
+            baa
+            each
+
+        - permutations_db (our volume) directory will have the following files:
+            a.txt               content: a
+            aab.txt             content: aab aba baa
+            aceh.txt            content: ache each
+
+    in addition to that, it will count the number of the words at the beginning and will update the statistics:
+        totalWords = <number of words>
+
+Getting the list of the words - /similar?word=<some_word>:
+    each word is in a file named: <Key>.txt that stores the list of all the similar words (Key is the sorted word)
+    on a GET request, the app is getting the file by the sorted word, and returns the list of the words except the requested word
+    if there is no such file -> returns an empty list
+
+
+Statistics - /stats GET request:
+    the stats.db file is in the permutations_db (our volume) directory
+    stats.db file is a file that being used by pickleDB which is a light, fast and based on json
+    each GET request of /similar?word=<some_word> will acquire lock and will update the stats.db:
+        add 1 to totalRequest
+        update the average
+    the update is happening after the response!
+
+Volume in docker:
+    I created a volume (permutations_db), which is not in the application directory:
+    1. to make sure that the statistics can be updated from few containers
+    2. to have a persistent database of the words and the statistics

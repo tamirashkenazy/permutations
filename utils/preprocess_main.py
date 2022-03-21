@@ -5,7 +5,7 @@ import os
 import sys
 
 # adding the root dir to the sys.path
-absolute_project_path = path.dirname(path.dirname(__file__))
+absolute_project_path = path.dirname(path.dirname(path.abspath(__file__)))
 sys.path.append(absolute_project_path)
 
 from api.api_schema import api_logger
@@ -28,7 +28,8 @@ def preprocess_create_files_from_all_words(
 
     if is_persistence_dir_empty or force_mapping_files is True:
         api_logger.debug("Mapping all word to db")
-        init_stats_db(get_stats_db())
+        stats_db = get_stats_db()
+        init_stats_db(stats_db)
         # if the path does exist and there are no files - try to map the file
         with open(words_file_path, "r") as all_words_file:
             lines = all_words_file.readlines()

@@ -40,7 +40,7 @@ add_timing_middleware(
 api_handler.add_middleware(
     CORSMiddleware,
     # TODO - remove the star and specify origins
-    allow_origins=["*"],
+    allow_origins=["http://localhost:8000"],
     allow_credentials=True,
     # allow_methods: any HTTP Request
     allow_methods=["*"],
@@ -93,4 +93,4 @@ def get_statistics():
 if __name__ == "__main__":
     # instructions to setup PyCharm for controller debugging:
     # https://seg-confluence.csg.apple.com/display/CELLULAR/Debugging
-    uvicorn.run("api_schema:api_handler", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("api_schema:api_handler", host="0.0.0.0", port=8000, reload=True)

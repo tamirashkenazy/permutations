@@ -1,12 +1,8 @@
-import logging
 import os.path as path
 from itertools import permutations
 from typing import List
 
 from paths.paths import get_persistent_db_dir_path
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 def make_all_permutations_from_file(word: str) -> List[str]:
@@ -39,7 +35,6 @@ def get_list_of_permutations_from_a_file(word: str) -> List[str]:
     with open(word_file_path, "r") as word_file:
         lines = word_file.readlines()
         lines = [line.strip() for line in lines]
-        # TODO - what to do if the word does not exist in the list
         set_of_words = set(lines)
         if word in set_of_words:
             set_of_words.remove(word)
