@@ -14,10 +14,10 @@ _building the docker is executing pre-processing section_
 
 
 ### Run docker image:
-#### First docker with volume definition
+#### For a single container / the first container (create a volume)
 * `docker run -d --name=permutations-container -p 8000:8000 -v permutations_db:/permutations_db permutations-image`
 
-#### Dockers with the first docker volume attached
+#### For more than one container, attaching the docker volume: permutations_db 
 * `docker run -d --name=permutations-container-2 -p 8001:8000 --volumes-from permutations-container permutations-image`
 
 ## Documentation
