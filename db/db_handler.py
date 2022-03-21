@@ -24,6 +24,10 @@ db_logger.addHandler(get_stream_handler(sys.stderr, logging.ERROR))
 
 
 def get_pickle_db(file_path: str) -> pickledb.PickleDB:
+    """
+    :param file_path: the path of the pickledb file
+    :return: pickleDB object
+    """
     db = pickledb.load(file_path, False)
     return db
 
@@ -46,24 +50,34 @@ def get_stats_db() -> pickledb.PickleDB:
 
 
 def add_statistics_of_requests(measured_time_nano_sec: int):
+    """
+    Setting the statistics in the stats.db, setting the number of requests and the avg time for request
+    :param measured_time_nano_sec
+    :return: None
+    """
     db_logger.info(f"Adding statistics of request, ns: {measured_time_nano_sec}")
     stats_db = get_stats_db()
     total_reqs = stats_db.get(TOTAL_REQUESTS_KEY)
     avg_time_in_ns = stats_db.get(AVG_PROCESSING_TIME_NS_KEY)
-    # multiply total_requests with avg time
+    # multiply total_requests with avg time to get total time
     total_time = total_reqs * avg_time_in_ns
 
     total_time += measured_time_nano_sec
     total_reqs += 1
 
+    # new avg by dividing the total with the number of the requests
     new_avg_time_in_ns = total_time // total_reqs
-    stats_db = pickledb.load(str(stats_db.loco), auto_dump=True, sig=False)
     stats_db.set(TOTAL_REQUESTS_KEY, total_reqs)
     stats_db.set(AVG_PROCESSING_TIME_NS_KEY, new_avg_time_in_ns)
     db_logger.info(f"Setting: {TOTAL_REQUESTS_KEY}: {total_reqs}, {AVG_PROCESSING_TIME_NS_KEY}: {new_avg_time_in_ns}")
 
 
 def add_number_of_words_to_stats_db(number_of_words: int):
+    """
+    Will add the number of the total words (adding at the preprocessing)
+    :param number_of_words
+    :return: None
+    """
     db_logger.info(f"Setting: {TOTAL_WORDS_KEY}: {number_of_words}")
     stats_db = get_stats_db()
     total_words = stats_db.get(TOTAL_WORDS_KEY)

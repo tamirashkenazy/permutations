@@ -17,6 +17,12 @@ from db.db_handler import init_stats_db, add_number_of_words_to_stats_db, get_st
 def preprocess_create_files_from_all_words(
     words_file_path: str, force_mapping_files: bool = False
 ):
+    """
+    Adding each wird from the words file to a file with the name of <sorted_word>.txt in the persistent db
+    :param words_file_path: the file with all the words separated by line-break
+    :param force_mapping_files: will remove the db dir and re-create it with the files
+    :return: None
+    """
     persistence_db_dir = get_persistent_db_dir_path()
     if force_mapping_files and path.exists(persistence_db_dir):
         shutil.rmtree(persistence_db_dir)
