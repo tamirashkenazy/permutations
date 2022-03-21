@@ -1,27 +1,52 @@
-how to build docker image: 
+# Permutations App 
 
-cd Dockerfile/path
+by Tamir Ashkenazy
 
-docker build -t permutations-image .
+## Installation
 
-how to run:
+### Build docker image:
+_building the docker is executing pre-processing section_
+* `cd /path/to/pa-permutation`
+* `docker build -t permutations-image .`
 
-docker run -d --name permutations-container -p 8000:8000 permutations-image
 
+### Run docker image:
+#### First docker with volume definition
+* `docker run -d --name=permutations-container -p 8000:8000 -v permutations_db:/permutations_db permutations-image`
 
-check that api is running:
+#### Dockers with the first docker volume attached
+* `docker run -d --name=permutations-container-2 -p 8001:8000 --volumes-from permutations-container permutations-image`
 
-curl "http://127.0.0.1:8000/health"
+## Documentation
 
-should get:
+### Check Health of WebService:
+* `curl "http://127.0.0.1:8000/health"`
 
+Expected Response: 
+```
 Health Check OK
+```
 
 
-get word example:
+### GET request for similar words:
+* `curl "http://localhost:8000/api/v1/similar?word=<some_word>"`
 
-curl "http://localhost:8000/api/v1/similar?word=apple"
+Response:
+```
+{
+    similar: [list,of,words,that,are,similar,to,provided,word]
+}
+```
 
-should get:
+### GET request for statistics:
+* `curl "http://localhost:8000/api/v1/stats"`
 
-{"similar":["appel","pepla"]}
+
+Response:
+```
+{
+    totalWords: int
+    totalRequests: int
+    avgProcessingTimeNs: int
+}
+```
