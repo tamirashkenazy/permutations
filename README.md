@@ -5,6 +5,9 @@ by Tamir Ashkenazy
 ## Installation
 
 ### Build docker image:
+#### pre-build - Remove Volume:
+* `docker volume rm permutations_db`
+
 _building the docker is executing pre-processing section_
 * `cd /path/to/pa-permutation`
 * `docker build -t permutations-image .`
@@ -50,3 +53,5 @@ Response:
     avgProcessingTimeNs: int
 }
 ```
+
+

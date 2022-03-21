@@ -37,13 +37,15 @@ def preprocess_create_files_from_all_words(
         stats_db = get_stats_db()
         init_stats_db(stats_db)
         # if the path does exist and there are no files - try to map the file
+        lines_count = 0
         with open(words_file_path, "r") as all_words_file:
-            lines = all_words_file.readlines()
-            add_number_of_words_to_stats_db(len(lines))
-            # add the number of words to db
-            for line in lines:
-                line = line.strip()
+            # read line by line for a very big file
+            while line := all_words_file.readline():
+                lines_count += 1
+                line = line.rstrip()
                 add_permutation_to_a_file(persistence_db_dir, line)
+        add_number_of_words_to_stats_db(lines_count)
+
         api_logger.debug("Finished Mapping all word to db")
     else:
         api_logger.debug("Skipped on mapping the words in files")

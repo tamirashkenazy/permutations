@@ -84,9 +84,9 @@ async def get_all_permutations_of_word_from_file(
 def get_statistics():
     stats_db = get_stats_db()
     return {
-        TOTAL_WORDS_KEY: stats_db.get(TOTAL_WORDS_KEY),
-        TOTAL_REQUESTS_KEY: stats_db.get(TOTAL_REQUESTS_KEY),
-        AVG_PROCESSING_TIME_NS_KEY: stats_db.get(AVG_PROCESSING_TIME_NS_KEY),
+        TOTAL_WORDS_KEY: int(stats_db.get(TOTAL_WORDS_KEY)),
+        TOTAL_REQUESTS_KEY: int(stats_db.get(TOTAL_REQUESTS_KEY)),
+        AVG_PROCESSING_TIME_NS_KEY: int(stats_db.get(AVG_PROCESSING_TIME_NS_KEY)),
     }
 
 

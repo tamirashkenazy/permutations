@@ -33,9 +33,9 @@ def get_pickle_db(file_path: str) -> pickledb.PickleDB:
 
 
 def init_stats_db(stats_db: pickledb.PickleDB):
-    stats_db.set(TOTAL_WORDS_KEY, 0)
-    stats_db.set(TOTAL_REQUESTS_KEY, 0)
-    stats_db.set(AVG_PROCESSING_TIME_NS_KEY, 0)
+    stats_db.set(TOTAL_WORDS_KEY, "0")
+    stats_db.set(TOTAL_REQUESTS_KEY, "0")
+    stats_db.set(AVG_PROCESSING_TIME_NS_KEY, "0")
 
 
 def get_stats_db_file_path() -> str:
@@ -58,7 +58,9 @@ def add_statistics_of_requests(measured_time_nano_sec: int):
     db_logger.info(f"Adding statistics of request, ns: {measured_time_nano_sec}")
     stats_db = get_stats_db()
     total_reqs = stats_db.get(TOTAL_REQUESTS_KEY)
+    total_reqs = int(total_reqs)
     avg_time_in_ns = stats_db.get(AVG_PROCESSING_TIME_NS_KEY)
+    avg_time_in_ns = int(avg_time_in_ns)
     # multiply total_requests with avg time to get total time
     total_time = total_reqs * avg_time_in_ns
 
@@ -67,8 +69,8 @@ def add_statistics_of_requests(measured_time_nano_sec: int):
 
     # new avg by dividing the total with the number of the requests
     new_avg_time_in_ns = total_time // total_reqs
-    stats_db.set(TOTAL_REQUESTS_KEY, total_reqs)
-    stats_db.set(AVG_PROCESSING_TIME_NS_KEY, new_avg_time_in_ns)
+    stats_db.set(TOTAL_REQUESTS_KEY, str(total_reqs))
+    stats_db.set(AVG_PROCESSING_TIME_NS_KEY, str(new_avg_time_in_ns))
     db_logger.info(f"Setting: {TOTAL_REQUESTS_KEY}: {total_reqs}, {AVG_PROCESSING_TIME_NS_KEY}: {new_avg_time_in_ns}")
 
 
@@ -78,8 +80,9 @@ def add_number_of_words_to_stats_db(number_of_words: int):
     :param number_of_words
     :return: None
     """
-    db_logger.info(f"Setting: {TOTAL_WORDS_KEY}: {number_of_words}")
     stats_db = get_stats_db()
     total_words = stats_db.get(TOTAL_WORDS_KEY)
+    total_words = int(total_words)
+    db_logger.info(f"Setting: {TOTAL_WORDS_KEY}: {total_words}")
     total_words += number_of_words
-    stats_db.set(TOTAL_WORDS_KEY, total_words)
+    stats_db.set(TOTAL_WORDS_KEY, str(total_words))
