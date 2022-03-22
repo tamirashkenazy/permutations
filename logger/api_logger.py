@@ -1,10 +1,11 @@
 import logging
 from typing import TextIO
 
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+FORMATTER_THREADS = logging.Formatter("%(threadName)-9s) %(asctime)s - %(name)s - %(levelname)s - %(message)s")
+FORMATTER = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 
-def get_stream_handler(sys_io: TextIO, logging_level: int):
+def get_stream_handler(sys_io: TextIO, logging_level: int, formatter = FORMATTER):
     """
     :param sys_io: usually the stdout or stderr
     :param logging_level: DEBUG, INFO, ERROR etc..

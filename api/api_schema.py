@@ -9,10 +9,11 @@ from starlette.background import BackgroundTasks
 from starlette.middleware.cors import CORSMiddleware
 from fastapi_utils.timing import add_timing_middleware
 
+from similar_words.preprocess import populate_similar_words
+
 BASE_APP_DIR_PATH = path.dirname(path.dirname(path.abspath(__file__)))
 sys.path.append(BASE_APP_DIR_PATH)
 
-from similar_words.words_map import SimilarWordsMap
 from logger.api_logger import get_stream_handler
 from api.definitions import PermutationResponse
 
@@ -29,17 +30,7 @@ api_logger.addHandler(get_stream_handler(sys.stdout, logging.DEBUG))
 api_logger.addHandler(get_stream_handler(sys.stderr, logging.ERROR))
 # endregion
 
-
-# region Preprocessing
-api_logger.info("About to start the preprocess")
-start_time = time.time()
-all_words_file_path = path.join(BASE_APP_DIR_PATH, "words_clean_small.txt")
-all_words_map = SimilarWordsMap()
-all_words_map.preprocess_mapping_all_words_in_memory(all_words_file_path)
-measured_time = time.time() - start_time
-api_logger.info(f"Finished preprocess in {measured_time:2.2f} seconds")
-# endregion
-
+all_words_map = populate_similar_words()
 
 add_timing_middleware(
     api_handler, record=api_logger.info, prefix="api", exclude="get_statistics"
@@ -93,5 +84,5 @@ def get_statistics():
     return all_words_map.stats
 
 
-# if __name__ == "__main__":
-#     uvicorn.run("api_schema:api_handler", host="0.0.0.0", port=8000, reload=True)
+if __name__ == "__main__":
+    uvicorn.run("api_schema:api_handler", host="0.0.0.0", port=8000, reload=True)
