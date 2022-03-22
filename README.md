@@ -5,8 +5,6 @@ by Tamir Ashkenazy
 ## Installation
 
 ### Build docker image:
-#### pre-build - Remove Volume:
-* `docker volume rm permutations_db`
 
 _building the docker is executing pre-processing section_
 * `cd /path/to/pa-permutation`
@@ -15,10 +13,7 @@ _building the docker is executing pre-processing section_
 
 ### Run docker image:
 #### For a single container / the first container (create a volume)
-* `docker run -d --name=permutations-container -p 8000:8000 -v permutations_db:/permutations_db permutations-image`
-
-#### For more than one container, attaching the docker volume: permutations_db 
-* `docker run -d --name=permutations-container-2 -p 8001:8000 --volumes-from permutations-container permutations-image`
+* `docker run -d --name=permutations-container -p 8000:8000 permutations-image`
 
 ## Documentation
 
