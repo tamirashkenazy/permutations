@@ -12,8 +12,8 @@ The word representation (the Key):
     the sort is taking O(1) for finite number of letters
 
 Preprocessing:
-    The preprocessing is mapping each word to a file with the name: <Key>.txt (Key is the sorted word)
-    That will create files, where each file holds all the similar words
+    The preprocessing is populating hashmap, where each Key (Key is the sorted word)
+    is mapping to the list of its permutations
 
     for example:
         words_clean.txt:
@@ -24,29 +24,26 @@ Preprocessing:
             baa
             each
 
-        - permutations_db (our volume) directory will have the following files:
-            a.txt               content: a
-            aab.txt             content: aab aba baa
-            aceh.txt            content: ache each
+        - hash_map will have the following key-values:
+            key: a                   value: a
+            key: aab                 value: aab aba baa
+            key: aceh                value: ache each
 
     in addition to that, it will count the number of the words at the beginning and will update the statistics:
         totalWords = <number of words>
 
 Getting the list of the words - /similar?word=<some_word>:
-    each word is in a file named: <Key>.txt that stores the list of all the similar words (Key is the sorted word)
-    on a GET request, the app is getting the file by the sorted word, and returns the list of the words except the requested word
-    if there is no such file -> returns an empty list
+    each word is in a hashmap where: <Key> mapped to the list of all the similar words (Key is the sorted word)
+    on a GET request, the app is getting the list by the sorted word, and returns the list of the words except the requested word
+    if there are no similar words of this word -> returns an empty list
 
 
 Statistics - /stats GET request:
-    the stats.db file is in the permutations_db (our volume) directory
-    stats.db file is a file that being used by pickleDB which is a light, fast and based on json
-    each GET request of /similar?word=<some_word> will acquire lock and will update the stats.db:
+    the stats is a dictionary
+    each GET request of /similar?word=<some_word> will acquire lock and will update the stats:
         add 1 to totalRequest
         update the average
     the update is happening after the response!
 
-Volume in docker:
-    I created a volume (permutations_db), which is not in the application directory:
-    1. to make sure that the statistics can be updated from few containers
-    2. to have a persistent database of the words and the statistics
+Locks:
+    Updating the stats or the similar words hashmap depands on acquiring a lock

@@ -39,7 +39,7 @@ add_timing_middleware(
 api_handler.add_middleware(
     CORSMiddleware,
     # TODO - remove the star and specify origins
-    allow_origins=["http://localhost:8000"],
+    allow_origins=["*"],
     allow_credentials=True,
     # allow_methods: any HTTP Request
     allow_methods=["*"],
